@@ -12,6 +12,9 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
         {
             info.Implement |= Config.IncludeFeatures;
             info.Implement &= ~Config.IgnoreFeatures;
+
+            if ((info.Implement & Features.RelativeOperators) != 0)
+                info.Implement |= Features.Comparable;
         }
 
         var usings = infos
@@ -103,18 +106,8 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
             .DecIndent()
             .WriteLine();
 
-        if (ConvertFromPrimitive != TypeConversion.None)
-            WriteLine(
-                    $"public static {ConvertFromPrimitive.ToString().ToLower()} operator {Name}({Type} value) => new {Name}(value);")
-                .WriteLine();
-        
-        
-        if (ConvertToPrimitive != TypeConversion.None)
-            WriteLine(
-                    $"public static {ConvertToPrimitive.ToString().ToLower()} operator {Type}({Name} value) => value.Value;")
-                .WriteLine();
- 
-
+        WriteTypeConversion();
+        WriteRelativeOperators();
         Close(true);
         AddJsonConverter();
     }
@@ -136,6 +129,32 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
         if ((Implement & Features.EquatablePrimitive) != 0)
             WriteLine($"public int CompareTo({Type} other) => Value.CompareTo(other);")
                 .WriteLine();
+    }
+
+    private void WriteRelativeOperators()
+    {
+        if ((Implement & Features.RelativeOperators) == 0) return;
+
+        foreach (var op in "> < >= <=".Split(' '))
+            WriteLine(
+                    $"public static bool operator {op}({Name} left, {Name} right) => left.CompareTo(right) {op} 0;")
+                .WriteLine();
+    }
+
+    private void WriteTypeConversion()
+    {
+        Write(ConvertFromPrimitive, Name, Type, $"new {Name}(value)");
+        Write(ConvertToPrimitive, Type, Name, "value.Value");
+        return;
+
+        void Write(TypeConversion c, string result, string arg, string expression)
+        {
+            if (c == TypeConversion.None) return;
+
+            WriteLine(
+                    $"public static {ConvertToPrimitive.ToString().ToLower()} operator {result}({arg} value) => {expression};")
+                .WriteLine();
+        }
     }
 
     public TypeConversion ConvertToPrimitive   { get; set; } = Config.ConvertToPrimitive;

@@ -31,6 +31,14 @@ public readonly record struct PrimaryKey(int Value): IComparable<int>, IComparab
 
     public static implicit operator int(PrimaryKey value) => value.Value;
 
+    public static bool operator >(PrimaryKey left, PrimaryKey right) => left.CompareTo(right) > 0;
+
+    public static bool operator <(PrimaryKey left, PrimaryKey right) => left.CompareTo(right) < 0;
+
+    public static bool operator >=(PrimaryKey left, PrimaryKey right) => left.CompareTo(right) >= 0;
+
+    public static bool operator <=(PrimaryKey left, PrimaryKey right) => left.CompareTo(right) <= 0;
+
 }
 
 public sealed class PrimaryKeyJsonConverter : JsonConverter

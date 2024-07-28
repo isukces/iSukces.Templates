@@ -29,10 +29,14 @@ public readonly record struct MyUid(Guid Value): IComparable<Guid>, IComparable<
     public static MyUid? FromNullable(Guid? value)
         => value is null ? null : new MyUid(value.Value);
 
-    public static explicit operator MyUid(Guid value) => new MyUid(value);
+    public static implicit operator MyUid(Guid value) => new MyUid(value);
 
     public static implicit operator Guid(MyUid value) => value.Value;
 
+    public static bool operator >(MyUid left, MyUid right) => left.CompareTo(right) > 0;
+    public static bool operator <(MyUid left, MyUid right) => left.CompareTo(right) < 0;
+    public static bool operator >=(MyUid left, MyUid right) => left.CompareTo(right) >= 0;
+    public static bool operator <=(MyUid left, MyUid right) => left.CompareTo(right) <= 0;
 }
 
 public sealed class MyUidJsonConverter : JsonConverter

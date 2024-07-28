@@ -12,5 +12,6 @@ public enum Features
     Parse                           = 32,
     ImplicitConversionToPrimitive   = 64,
     ImplicitConversionFromPrimitive = 128,
-    All                             = 256 - 1
+    RelativeOperators               = 256,
+    All                             = 512 - 1
 }

@@ -2,5 +2,7 @@
 
 public enum TypeConversion
 {
-    None, Implicit, Explicit
+    None,
+    Implicit,
+    Explicit
 }
