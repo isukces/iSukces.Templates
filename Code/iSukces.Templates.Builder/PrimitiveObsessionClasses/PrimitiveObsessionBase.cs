@@ -114,11 +114,13 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
 
     protected abstract void WriteCodeInternal();
 
+    protected virtual string GetEqualsExpression(string a, string b) => $"{a}.Equals({b})";
+    
     protected void WriteIComparableAndEquatable(Func<string, string, string>? convertToComparable = null)
     {
         convertToComparable ??= (a, b) => $"{a}.CompareTo({b})";
         if ((Implement & Features.ComparablePrimitive) != 0)
-            WriteLine($"public bool Equals({Type} other) => Value.Equals(other);")
+            WriteLine($"public bool Equals({Type} other) => {GetEqualsExpression("Value", "other")};")
                 .WriteLine();
         if ((Implement & Features.Comparable) != 0)
         {

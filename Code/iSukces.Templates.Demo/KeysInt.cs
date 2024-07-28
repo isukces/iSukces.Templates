@@ -10,7 +10,7 @@ namespace iSukces.Templates.Demo;
 [JsonConverter(typeof(PrimaryKeyJsonConverter))]
 public readonly record struct PrimaryKey(int Value): IComparable<int>, IComparable<PrimaryKey>, IEquatable<int>, IPrimitiveWrapper<int>
 {
-    public bool Equals(int other) => Value.Equals(other);
+    public bool Equals(int other) => Value == other;
 
     public int CompareTo(PrimaryKey other) => Value.CompareTo(other.Value);
 
@@ -49,6 +49,7 @@ public sealed class PrimaryKeyJsonConverter : JsonConverter
     {
         return reader.Value switch
         {
+            string stringValue => PrimaryKey.Parse(stringValue),
             int intValue => new PrimaryKey(intValue),
             long longValue => new PrimaryKey((int)longValue),
             null when objectType == typeof(PrimaryKey?) => null,

@@ -244,11 +244,13 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
 
     protected abstract void WriteCodeInternal();
 
+    protected virtual string GetEqualsExpression(string a, string b) => $"{a}.Equals({b})";
+
     protected void WriteIComparableAndEquatable(Func<string, string, string>? convertToComparable = null)
     {
         convertToComparable ??= (a, b) => $"{a}.CompareTo({b})";
         if ((Implement & Features.ComparablePrimitive) != 0)
-            WriteLine($"public bool Equals({Type} other) => Value.Equals(other);")
+            WriteLine($"public bool Equals({Type} other) => {GetEqualsExpression("Value", "other")};")
                 .WriteLine();
         if ((Implement & Features.Comparable) != 0)
         {
@@ -303,12 +305,18 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
 {
     protected override IEnumerable<CaseExpressionItem> GetJsonConverterReadItems()
     {
+        var parse = (Implement & Features.Parse) != 0
+            ? $"{Name}.Parse(stringValue)"
+            : $"new {Name}({Type}.Parse(stringValue.Trim()), CultureInfo.InvariantCulture)";
+        yield return new CaseExpressionItem("string stringValue", parse);
         yield return new CaseExpressionItem("int intValue", $"new {Name}(intValue)");
         yield return new CaseExpressionItem("long longValue", $"new {Name}(({Type})longValue)");
         yield return new CaseExpressionItem($"null when objectType == typeof({Name}?)", "null");
         yield return new CaseExpressionItem("null", "throw new NotImplementedException()");
         yield return new CaseExpressionItem("_", "throw new NotImplementedException()");
     }
+
+    protected override string GetEqualsExpression(string a, string b) => $"{a} == {b}";
 
     protected override IEnumerable<string> GetUsingNamespaces()
     {

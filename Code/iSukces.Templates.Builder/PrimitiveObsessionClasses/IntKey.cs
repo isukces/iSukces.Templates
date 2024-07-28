@@ -6,6 +6,10 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
 {
     protected override IEnumerable<CaseExpressionItem> GetJsonConverterReadItems()
     {
+        var parse = (Implement & Features.Parse) != 0
+            ? $"{Name}.Parse(stringValue)"
+            : $"new {Name}({Type}.Parse(stringValue.Trim()), CultureInfo.InvariantCulture)";
+        yield return new CaseExpressionItem("string stringValue", parse);
         yield return new CaseExpressionItem("int intValue", $"new {Name}(intValue)");
         yield return new CaseExpressionItem("long longValue", $"new {Name}(({Type})longValue)");
         yield return new CaseExpressionItem($"null when objectType == typeof({Name}?)", "null");
@@ -13,6 +17,8 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
         yield return new CaseExpressionItem("_", "throw new NotImplementedException()");
     }
 
+    protected override string GetEqualsExpression(string a, string b) => $"{a} == {b}";
+    
     protected override IEnumerable<string> GetUsingNamespaces()
     {
         foreach (var ns in base.GetUsingNamespaces())
@@ -26,7 +32,6 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
         WriteIComparableAndEquatable();
         WriteParse();
     }
-
 
     private void WriteParse()
     {
