@@ -1,15 +1,19 @@
 <#@ template language="C#" #>
 <#@ include file="..\iSukces.Templates\PrimitiveObsession.ttinclude" once="true" #><#@ import namespace="System.Collections.Generic" #><#@ import namespace="System.Linq" #><#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
 <#
+
+    Config.ImplicitUsings.Add("System");
+    Config.Namespace = "iSukces.Templates.Demo";
+    Config.IncludeFeatures = Features.All;
+    // Config.IgnoreFeatures = Features.NewtonsoftJsonSerializer;
+    Config.ConvertFromPrimitive = TypeConversion.Explicit;
+    Config.ConvertToPrimitive = TypeConversion.Implicit;
+    
     var infos = new[]
     {
         new GuidKey("MyUid")
     };
-    Config.ImplicitUsings.Add("System");
 
-    Config.Namespace = "iSukces.Templates.Demo";
-    Config.IncludeFeatures = Features.All;
-    // Config.IgnoreFeatures = Features.NewtonsoftJsonSerializer;
     PrimitiveObsessionBase.WriteAll(infos, this);
 #>
 

@@ -2,6 +2,12 @@
 
 public class CodeWriterBase
 {
+    protected void CheckArgumentNullOrEmpty(string argumentName)
+    {
+        SingleLineIf($"string.IsNullOrEmpty({argumentName})",
+            "throw new ArgumentException(\"\", nameof(" + argumentName + "));");
+    }
+
     protected void Close(bool addNl, string append = "")
     {
         DecIndent();
@@ -32,13 +38,6 @@ public class CodeWriterBase
         WriteLine("{");
         IncIndent();
         return this;
-    }
-
-    protected void CheckArgumentNullOrEmpty(string argumentName)
-    {
-        SingleLineIf($"string.IsNullOrEmpty({argumentName})", 
-            "throw new ArgumentException(\"\", nameof("+argumentName+"));");
-
     }
 
     protected CodeWriterBase SingleLineIf(string condition, string statement)

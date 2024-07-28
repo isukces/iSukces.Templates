@@ -89,6 +89,7 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
             WriteLine($"[JsonConverter(typeof({Name}JsonConverter))]");
     }
 
+
     private void WriteCode(TextTransformation output)
     {
         Output = output;
@@ -102,6 +103,17 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
             .DecIndent()
             .WriteLine();
 
+        if (ConvertFromPrimitive != TypeConversion.None)
+            WriteLine(
+                    $"public static {ConvertFromPrimitive.ToString().ToLower()} operator {Name}({Type} value) => new {Name}(value);")
+                .WriteLine();
+        
+        
+        if (ConvertToPrimitive != TypeConversion.None)
+            WriteLine(
+                    $"public static {ConvertToPrimitive.ToString().ToLower()} operator {Type}({Name} value) => value.Value;")
+                .WriteLine();
+ 
 
         Close(true);
         AddJsonConverter();
@@ -125,6 +137,9 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
             WriteLine($"public int CompareTo({Type} other) => Value.CompareTo(other);")
                 .WriteLine();
     }
+
+    public TypeConversion ConvertToPrimitive   { get; set; } = Config.ConvertToPrimitive;
+    public TypeConversion ConvertFromPrimitive { get; set; } = Config.ConvertFromPrimitive;
 
     public string Name { get; } = name;
 

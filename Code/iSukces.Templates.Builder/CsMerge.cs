@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace iSukces.Templates.Builder;
 
-internal class CsMerge(string header)
+internal class CsMerge(string[] header)
 {
     private static string GetProjectPath(string projectFileName, [CallerFilePath] string? path = null)
     {
@@ -24,7 +24,8 @@ internal class CsMerge(string header)
     {
         foreach (var ns in GetNamespaces().OrderBy(a => a))
             yield return $"<#@ import namespace=\"{ns}\" #>";
-        yield return "// " + header;
+        foreach (var headerLine in header) yield return "// " + headerLine;
+
         yield return "<#+";
         yield return "#nullable enable";
         yield return "";
@@ -83,4 +84,4 @@ public enum Fla
     IgnoreAllEmptyLines = 1
 }
 
-record struct CsFile(string Filename, Fla Flags);
+internal record struct CsFile(string Filename, Fla Flags);

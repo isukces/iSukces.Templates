@@ -12,19 +12,19 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
         yield return new CaseExpressionItem("null", "throw new NotImplementedException()");
         yield return new CaseExpressionItem("_", "throw new NotImplementedException()");
     }
- 
-    protected override void WriteCodeInternal()
-    {
-        WriteIComparableAndEquatable();
-        WriteParse();
-    }
-    
+
     protected override IEnumerable<string> GetUsingNamespaces()
     {
         foreach (var ns in base.GetUsingNamespaces())
             yield return ns;
-        if ((Implement & (Features.NewtonsoftJsonSerializer | Features.Parse) ) != 0)
+        if ((Implement & (Features.NewtonsoftJsonSerializer | Features.Parse)) != 0)
             yield return "System.Globalization";
+    }
+
+    protected override void WriteCodeInternal()
+    {
+        WriteIComparableAndEquatable();
+        WriteParse();
     }
 
 

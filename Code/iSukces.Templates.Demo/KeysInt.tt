@@ -1,15 +1,19 @@
 <#@ template language="C#" #>
 <#@ include file="..\iSukces.Templates\PrimitiveObsession.ttinclude" once="true" #>
-<#    var infos = new[]
+<#  
+    Config.ImplicitUsings.Add("System");
+    Config.Namespace = "iSukces.Templates.Demo";
+    Config.IncludeFeatures = Features.All;
+    // Config.IgnoreFeatures = Features.NewtonsoftJsonSerializer;
+    Config.ConvertFromPrimitive = TypeConversion.Implicit;
+    Config.ConvertToPrimitive = TypeConversion.Implicit;
+
+    var infos = new[]
     {
         new IntKey("PrimaryKey")
     };
 
 
-    Config.ImplicitUsings.Add("System");
-    Config.Namespace = "iSukces.Templates.Demo";
-    Config.IncludeFeatures = Features.All;
-    Config.IgnoreFeatures = Features.NewtonsoftJsonSerializer;
     PrimitiveObsessionBase.WriteAll(infos, this);
     
 #>
