@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Copyright>Copyright © Internet Sukces Piotr Stęclik 2024</Copyright>
+        <ProjectGuid>{135CC885-E031-409C-822F-DF984572839A}</ProjectGuid>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>12</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Authors>Internet Sukces Piotr Stęclik</Authors>
+    </PropertyGroup>
+</Project>

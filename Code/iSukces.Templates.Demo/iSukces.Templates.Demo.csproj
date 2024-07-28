@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Copyright>Copyright © Internet Sukces Piotr Stęclik 2024</Copyright>
+        <ProjectGuid>{83312E66-9663-4E02-AB20-563DEA41ADC4}</ProjectGuid>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <OutputType>Exe</OutputType>
+        <Authors>Internet Sukces Piotr Stęclik</Authors>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="iSukces.Base" Version="1.24.307.148"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="KeysGuid.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>KeysGuid.tt</DependentUpon>
+        </Compile>
+        <Compile Update="KeysInt.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>KeysInt.tt</DependentUpon>
+        </Compile>
+        <None Update="KeysInt.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>KeysInt.cs</LastGenOutput>
+        </None>
+        <None Update="KeysGuid.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>KeysGuid.cs</LastGenOutput>
+        </None>
+    </ItemGroup>
+</Project>

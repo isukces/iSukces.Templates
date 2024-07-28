@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Templates", "iSukces.Templates\iSukces.Templates.csproj", "{725F257C-9F35-4A3F-928B-D7E450831108}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Templates.Builder", "iSukces.Templates.Builder\iSukces.Templates.Builder.csproj", "{11280628-D06A-4084-A7DE-BD582808DCBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Templates.Demo", "iSukces.Templates.Demo\iSukces.Templates.Demo.csproj", "{FDE30E17-6065-495A-87DC-58CD40BAA299}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{725F257C-9F35-4A3F-928B-D7E450831108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{725F257C-9F35-4A3F-928B-D7E450831108}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{725F257C-9F35-4A3F-928B-D7E450831108}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{725F257C-9F35-4A3F-928B-D7E450831108}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11280628-D06A-4084-A7DE-BD582808DCBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11280628-D06A-4084-A7DE-BD582808DCBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11280628-D06A-4084-A7DE-BD582808DCBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11280628-D06A-4084-A7DE-BD582808DCBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDE30E17-6065-495A-87DC-58CD40BAA299}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDE30E17-6065-495A-87DC-58CD40BAA299}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDE30E17-6065-495A-87DC-58CD40BAA299}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDE30E17-6065-495A-87DC-58CD40BAA299}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Copyright>Copyright © Internet Sukces Piotr Stęclik 2024</Copyright>
+        <ProjectGuid>{5DE7220E-F3B1-40C1-BAD6-56EAD74CE7C4}</ProjectGuid>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <OutputType>Exe</OutputType>
+        <Authors>Internet Sukces Piotr Stęclik</Authors>
+        <AssemblyVersion>1.24.728.1</AssemblyVersion>
+        <FileVersion>1.24.728.1</FileVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Update="PrimitiveObsessionClasses\GuidKey.cs">
+            <DependentUpon>PrimitiveObsessionBase.cs</DependentUpon>
+        </Compile>
+        <Compile Update="PrimitiveObsessionClasses\IntKey.cs">
+            <DependentUpon>PrimitiveObsessionBase.cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
+</Project>
