@@ -364,6 +364,8 @@ public class GuidKey(string name) : PrimitiveObsessionBase(name, "Guid")
         WriteLine();
         WriteLine($"public static {Name} Empty {{ get; }} = new {Name}(Guid.Empty);");
         WriteLine();
+        WriteLine("public bool IsEmpty => Value.Equals(Guid.Empty);");
+        WriteLine();
     }
 
     private void WriteParse()

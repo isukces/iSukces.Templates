@@ -26,6 +26,8 @@ public readonly record struct MyUid(Guid Value): IComparable<Guid>, IComparable<
 
     public static MyUid Empty { get; } = new MyUid(Guid.Empty);
 
+    public bool IsEmpty => Value.Equals(Guid.Empty);
+
     public static MyUid? FromNullable(Guid? value)
         => value is null ? null : new MyUid(value.Value);
 
