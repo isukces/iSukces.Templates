@@ -29,9 +29,12 @@ internal class Program
             .WithSource("Common\\CodeWriterBase.cs")
             .WithSource("PrimitiveObsessionClasses\\PrimitiveObsessionBase.cs")
             .WithSource("PrimitiveObsessionClasses\\IntKey.cs")
+            .WithSource("PrimitiveObsessionClasses\\StringKey.cs")
             .WithSource("PrimitiveObsessionClasses\\GuidKey.cs")
             .WithProject("iSukces.Templates.sln")
             .WriteTo("iSukces.Templates\\PrimitiveObsession.ttinclude")
             ;
+        
+        Console.WriteLine("Done");
     }
 }

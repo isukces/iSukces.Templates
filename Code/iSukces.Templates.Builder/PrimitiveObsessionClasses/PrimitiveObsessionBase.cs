@@ -2,7 +2,7 @@
 
 namespace iSukces.Templates.Builder.PrimitiveObsessionClasses;
 
-public abstract class PrimitiveObsessionBase(string name, string type) : CodeWriterBase
+public abstract class PrimitiveObsessionBase(string name, string wrappedType) : CodeWriterBase
 {
     public static void WriteAll<T>(T[] infos, TextTransformation p)
         where T : PrimitiveObsessionBase
@@ -62,14 +62,24 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
         Close(true);
     }
 
+    protected virtual string PrepareArgument(string variableName)
+    {
+        return variableName;
+    }
+
+    protected virtual string GetEqualsExpression(string a, string b)
+    {
+        return $"{a}.Equals({b})";
+    }
+
     private IEnumerable<string> GetInterfaces()
     {
         if ((Implement & Features.PrimitiveWrapper) != 0)
-            yield return $"IPrimitiveWrapper<{Type}>";
+            yield return $"IPrimitiveWrapper<{WrappedType}>";
         if ((Implement & Features.EquatablePrimitive) != 0)
-            yield return $"IEquatable<{Type}>";
+            yield return $"IEquatable<{WrappedType}>";
         if ((Implement & Features.ComparablePrimitive) != 0)
-            yield return $"{nameof(IComparable)}<{Type}>";
+            yield return $"{nameof(IComparable)}<{WrappedType}>";
         if ((Implement & Features.Comparable) != 0)
             yield return $"IComparable<{Name}>";
     }
@@ -97,30 +107,35 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
     {
         Output = output;
         WriteAttributes();
-        Open($"public readonly record struct {Name}({Type} Value): {Interfaces}");
+        var record      = this.UseRecordStruct ? " record" : "";
+        var constructor = this.UseRecordStruct ? $"({WrappedTypeRefNullable} Value)" : "";
+        Open($"public readonly{record} struct {Name}{constructor}: {Interfaces}");
         WriteCodeInternal();
 
-        WriteLine($"public static {Name}? FromNullable({Type}? value)")
-            .IncIndent()
-            .WriteLine($"=> value is null ? null : new {Name}(value.Value);")
-            .DecIndent()
-            .WriteLine();
+        if (AllowWriteFromNullable)
+            WriteLine($"public static {Name}? FromNullable({WrappedType}? value)")
+                .IncIndent()
+                .WriteLine($"=> value is null ? null : new {Name}(value.Value);")
+                .DecIndent()
+                .WriteLine();
 
         WriteTypeConversion();
         WriteRelativeOperators();
+        AddFieldsAndProperties();
         Close(true);
         AddJsonConverter();
     }
 
     protected abstract void WriteCodeInternal();
-
-    protected virtual string GetEqualsExpression(string a, string b) => $"{a}.Equals({b})";
     
+    protected virtual void AddFieldsAndProperties() { }
+
     protected void WriteIComparableAndEquatable(Func<string, string, string>? convertToComparable = null)
     {
+        var arg = PrepareArgument("other");
         convertToComparable ??= (a, b) => $"{a}.CompareTo({b})";
         if ((Implement & Features.ComparablePrimitive) != 0)
-            WriteLine($"public bool Equals({Type} other) => {GetEqualsExpression("Value", "other")};")
+            WriteLine($"public bool Equals({WrappedTypeRefNullable} other) => {GetEqualsExpression("Value", arg)};")
                 .WriteLine();
         if ((Implement & Features.Comparable) != 0)
         {
@@ -129,8 +144,11 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
         }
 
         if ((Implement & Features.EquatablePrimitive) != 0)
-            WriteLine($"public int CompareTo({Type} other) => Value.CompareTo(other);")
+        {
+            var c1 = convertToComparable("Value", arg);
+            WriteLine($"public int CompareTo({WrappedTypeRefNullable} other) => {c1};")
                 .WriteLine();
+        }
     }
 
     private void WriteRelativeOperators()
@@ -145,8 +163,8 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
 
     private void WriteTypeConversion()
     {
-        Write(ConvertFromPrimitive, Name, Type, $"new {Name}(value)");
-        Write(ConvertToPrimitive, Type, Name, "value.Value");
+        Write(ConvertFromPrimitive, Name, WrappedTypeRefNullable, $"new {Name}(value)");
+        Write(ConvertToPrimitive, WrappedType, Name, "value.Value");
         return;
 
         void Write(TypeConversion c, string result, string arg, string expression)
@@ -159,6 +177,10 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
         }
     }
 
+    protected bool UseRecordStruct           { get; set; } = true;
+    protected bool AllowWriteFromNullable    { get; set; } = true;
+    protected bool HasReferenceNullableValue { get; set; }
+
     public TypeConversion ConvertToPrimitive   { get; set; } = Config.ConvertToPrimitive;
     public TypeConversion ConvertFromPrimitive { get; set; } = Config.ConvertFromPrimitive;
 
@@ -167,6 +189,9 @@ public abstract class PrimitiveObsessionBase(string name, string type) : CodeWri
     public string Interfaces
         => string.Join(", ", GetInterfaces().OrderBy(a => a).Distinct());
 
-    public string   Type      { get; } = type;
+    public string WrappedType { get; } = wrappedType;
+
+    public string WrappedTypeRefNullable => HasReferenceNullableValue ? $"{WrappedType}?" : WrappedType;
+
     public Features Implement { get; set; }
 }

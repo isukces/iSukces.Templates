@@ -8,8 +8,8 @@
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
         <Authors>Internet Sukces Piotr Stęclik</Authors>
-        <AssemblyVersion>1.24.728.1</AssemblyVersion>
-        <FileVersion>1.24.728.1</FileVersion>
+        <AssemblyVersion>1.24.821.2</AssemblyVersion>
+        <FileVersion>1.24.821.2</FileVersion>
     </PropertyGroup>
     <ItemGroup>
         <Compile Update="PrimitiveObsessionClasses\GuidKey.cs">
@@ -17,6 +17,9 @@
         </Compile>
         <Compile Update="PrimitiveObsessionClasses\IntKey.cs">
             <DependentUpon>PrimitiveObsessionBase.cs</DependentUpon>
+        </Compile>
+        <Compile Update="PrimitiveObsessionClasses\StringKey.cs">
+          <DependentUpon>PrimitiveObsessionBase.cs</DependentUpon>
         </Compile>
     </ItemGroup>
 </Project>

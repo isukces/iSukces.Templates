@@ -4,11 +4,20 @@ namespace iSukces.Templates.Builder.PrimitiveObsessionClasses;
 
 public class GuidKey(string name) : PrimitiveObsessionBase(name, "Guid")
 {
+    protected override void AddFieldsAndProperties()
+    {
+        base.AddFieldsAndProperties();
+        WriteLine($"public static {Name} Empty {{ get; }} = new {Name}(Guid.Empty);");
+        WriteLine();
+        WriteLine("public bool IsEmpty => Value.Equals(Guid.Empty);");
+        WriteLine();
+    }
+
     protected override IEnumerable<CaseExpressionItem> GetJsonConverterReadItems()
     {
         var parse = (Implement & Features.Parse) != 0
             ? $"{Name}.Parse(stringValue)"
-            : $"new {Name}({Type}.Parse(stringValue.Trim()))";
+            : $"new {Name}({WrappedType}.Parse(stringValue.Trim()))";
         yield return new CaseExpressionItem("string stringValue", parse);
         yield return new CaseExpressionItem($"null when objectType == typeof({Name}?)", "null");
         yield return new CaseExpressionItem("null", "throw new NotImplementedException()");
@@ -22,10 +31,6 @@ public class GuidKey(string name) : PrimitiveObsessionBase(name, "Guid")
         WriteParse();
         WriteLine($"public static {Name} NewUid() => new {Name}(Guid.NewGuid());");
         WriteLine();
-        WriteLine($"public static {Name} Empty {{ get; }} = new {Name}(Guid.Empty);");
-        WriteLine();
-        WriteLine("public bool IsEmpty => Value.Equals(Guid.Empty);");
-        WriteLine();
     }
 
     private void WriteParse()
@@ -34,7 +39,7 @@ public class GuidKey(string name) : PrimitiveObsessionBase(name, "Guid")
         Open($"public static {Name} Parse(string? text)");
         WriteLine("text = text?.Trim();");
         CheckArgumentNullOrEmpty("text");
-        WriteLine($"return new {Name}({Type}.Parse(text));");
+        WriteLine($"return new {Name}({WrappedType}.Parse(text));");
         Close(true);
     }
 }

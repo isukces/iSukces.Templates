@@ -32,5 +32,14 @@
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>KeysGuid.cs</LastGenOutput>
         </None>
+        <None Update="StringKey.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>StringKey.cs</LastGenOutput>
+        </None>
+        <Compile Update="StringKey.cs">
+          <AutoGen>True</AutoGen>
+          <DesignTime>True</DesignTime>
+          <DependentUpon>StringKey.tt</DependentUpon>
+        </Compile>
     </ItemGroup>
 </Project>

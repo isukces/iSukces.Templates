@@ -8,10 +8,10 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
     {
         var parse = (Implement & Features.Parse) != 0
             ? $"{Name}.Parse(stringValue)"
-            : $"new {Name}({Type}.Parse(stringValue.Trim()), CultureInfo.InvariantCulture)";
+            : $"new {Name}({WrappedType}.Parse(stringValue.Trim()), CultureInfo.InvariantCulture)";
         yield return new CaseExpressionItem("string stringValue", parse);
         yield return new CaseExpressionItem("int intValue", $"new {Name}(intValue)");
-        yield return new CaseExpressionItem("long longValue", $"new {Name}(({Type})longValue)");
+        yield return new CaseExpressionItem("long longValue", $"new {Name}(({WrappedType})longValue)");
         yield return new CaseExpressionItem($"null when objectType == typeof({Name}?)", "null");
         yield return new CaseExpressionItem("null", "throw new NotImplementedException()");
         yield return new CaseExpressionItem("_", "throw new NotImplementedException()");
@@ -39,7 +39,7 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
         Open($"public static {Name} Parse(string? text)");
         WriteLine("text = text?.Trim();");
         CheckArgumentNullOrEmpty("text");
-        WriteLine($"return new {Name}({Type}.Parse(text, CultureInfo.InvariantCulture));");
+        WriteLine($"return new {Name}({WrappedType}.Parse(text, CultureInfo.InvariantCulture));");
         Close(true);
     }
 }
