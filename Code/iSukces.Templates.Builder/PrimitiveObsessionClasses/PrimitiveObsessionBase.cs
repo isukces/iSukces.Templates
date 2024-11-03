@@ -109,7 +109,8 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         WriteAttributes();
         var record      = UseRecordStruct ? " record" : "";
         var constructor = UseRecordStruct ? $"({WrappedTypeRefNullable} Value)" : "";
-        Open($"public readonly{record} struct {Name}{constructor}: {Interfaces}");
+        var part = IsPartial ? " partial" : "";
+        Open($"public readonly{record}{part} struct {Name}{constructor}: {Interfaces}");
         WriteCodeInternal();
 
         if (AllowWriteFromNullable)
@@ -187,6 +188,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
     protected bool UseRecordStruct           { get; set; } = true;
     protected bool AllowWriteFromNullable    { get; set; } = true;
     protected bool HasReferenceNullableValue { get; set; }
+    public    bool IsPartial                 { get; set; }
 
     public TypeConversion ConvertToPrimitive   { get; set; } = Config.ConvertToPrimitive;
     public TypeConversion ConvertFromPrimitive { get; set; } = Config.ConvertFromPrimitive;

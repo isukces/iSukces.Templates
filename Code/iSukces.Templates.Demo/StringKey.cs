@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace iSukces.Templates.Demo;
 
 [JsonConverter(typeof(MyIdentifierJsonConverter))]
-public readonly struct MyIdentifier: IComparable<MyIdentifier>, IComparable<string>, IEquatable<string>, IPrimitiveWrapper<string>
+public readonly partial struct MyIdentifier: IComparable<MyIdentifier>, IComparable<string>, IEquatable<string>, IPrimitiveWrapper<string>
 {
     public MyIdentifier(string? value) => _value = value?.Trim();
 

@@ -12,6 +12,9 @@
     var infos = new[]
     {
         new StringKey("MyIdentifier", StringComparison.OrdinalIgnoreCase)
+        {
+            IsPartial = true
+        }
     };
 
 
