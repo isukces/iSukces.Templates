@@ -23,6 +23,8 @@ public readonly struct MyIdentifier: IComparable<MyIdentifier>, IComparable<stri
 
     public int CompareTo(string? other) => Comparer.Compare(Value, other ?? string.Empty);
 
+    public override string ToString() => Value.Trim();
+
     public static implicit operator MyIdentifier(string? value) => new MyIdentifier(value);
 
     public static implicit operator string(MyIdentifier value) => value.Value;

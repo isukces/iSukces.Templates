@@ -7,6 +7,7 @@
     // Config.IgnoreFeatures = Features.NewtonsoftJsonSerializer;
     Config.ConvertFromPrimitive = TypeConversion.Implicit;
     Config.ConvertToPrimitive = TypeConversion.Implicit;
+    Config.ToStringExpression = "Value.Trim()";
 
     var infos = new[]
     {

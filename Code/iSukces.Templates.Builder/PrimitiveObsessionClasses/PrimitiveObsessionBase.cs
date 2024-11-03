@@ -107,8 +107,8 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
     {
         Output = output;
         WriteAttributes();
-        var record      = this.UseRecordStruct ? " record" : "";
-        var constructor = this.UseRecordStruct ? $"({WrappedTypeRefNullable} Value)" : "";
+        var record      = UseRecordStruct ? " record" : "";
+        var constructor = UseRecordStruct ? $"({WrappedTypeRefNullable} Value)" : "";
         Open($"public readonly{record} struct {Name}{constructor}: {Interfaces}");
         WriteCodeInternal();
 
@@ -118,12 +118,19 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
                 .WriteLine($"=> value is null ? null : new {Name}(value.Value);")
                 .DecIndent()
                 .WriteLine();
-
+        WriteToString();
         WriteTypeConversion();
         WriteRelativeOperators();
         AddFieldsAndProperties();
         Close(true);
         AddJsonConverter();
+    }
+
+    private void WriteToString()
+    {
+        if (string.IsNullOrEmpty(Config.ToStringExpression)) return;
+        WriteLine($"public override string ToString() => {Config.ToStringExpression};")
+            .WriteLine();
     }
 
     protected abstract void WriteCodeInternal();
