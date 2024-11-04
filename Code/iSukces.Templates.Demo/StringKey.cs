@@ -37,6 +37,10 @@ public readonly partial struct MyIdentifier: IComparable<MyIdentifier>, ICompara
 
     public static bool operator <=(MyIdentifier left, MyIdentifier right) => left.CompareTo(right) <= 0;
 
+    public static bool operator ==(MyIdentifier left, MyIdentifier right) => left.Equals(right);
+
+    public static bool operator !=(MyIdentifier left, MyIdentifier right) => !left.Equals(right);
+
     private readonly string? _value;
 
     public string Value => _value ?? string.Empty;

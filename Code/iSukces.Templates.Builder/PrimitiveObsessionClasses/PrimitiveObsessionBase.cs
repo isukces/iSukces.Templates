@@ -37,6 +37,10 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         }
     }
 
+    protected virtual void AddFieldsAndProperties()
+    {
+    }
+
 
     private void AddJsonConverter()
     {
@@ -62,9 +66,9 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         Close(true);
     }
 
-    protected virtual string PrepareArgument(string variableName)
+    private void BoolOperator(string op, string expr)
     {
-        return variableName;
+        WriteLine($"public static bool operator {op}({Name} left, {Name} right) => {expr};").WriteLine();
     }
 
     protected virtual string GetEqualsExpression(string a, string b)
@@ -96,6 +100,11 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             yield return "Newtonsoft.Json";
     }
 
+    protected virtual string PrepareArgument(string variableName)
+    {
+        return variableName;
+    }
+
     private void WriteAttributes()
     {
         if ((Implement & Features.NewtonsoftJsonSerializer) != 0)
@@ -109,7 +118,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         WriteAttributes();
         var record      = UseRecordStruct ? " record" : "";
         var constructor = UseRecordStruct ? $"({WrappedTypeRefNullable} Value)" : "";
-        var part = IsPartial ? " partial" : "";
+        var part        = IsPartial ? " partial" : "";
         Open($"public readonly{record}{part} struct {Name}{constructor}: {Interfaces}");
         WriteCodeInternal();
 
@@ -122,21 +131,21 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         WriteToString();
         WriteTypeConversion();
         WriteRelativeOperators();
+        WriteEqualityOperators();
         AddFieldsAndProperties();
         Close(true);
         AddJsonConverter();
     }
 
-    private void WriteToString()
-    {
-        if (string.IsNullOrEmpty(Config.ToStringExpression)) return;
-        WriteLine($"public override string ToString() => {Config.ToStringExpression};")
-            .WriteLine();
-    }
-
     protected abstract void WriteCodeInternal();
-    
-    protected virtual void AddFieldsAndProperties() { }
+
+    private void WriteEqualityOperators()
+    {
+        if (UseRecordStruct || (Implement & Features.EqualityOperators) == 0)
+            return;
+        BoolOperator("==", "left.Equals(right)");
+        BoolOperator("!=", "!left.Equals(right)");
+    }
 
     protected void WriteIComparableAndEquatable(Func<string, string, string>? convertToComparable = null)
     {
@@ -164,9 +173,14 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         if ((Implement & Features.RelativeOperators) == 0) return;
 
         foreach (var op in "> < >= <=".Split(' '))
-            WriteLine(
-                    $"public static bool operator {op}({Name} left, {Name} right) => left.CompareTo(right) {op} 0;")
-                .WriteLine();
+            BoolOperator(op, $"left.CompareTo(right) {op} 0");
+    }
+
+    private void WriteToString()
+    {
+        if (string.IsNullOrEmpty(Config.ToStringExpression)) return;
+        WriteLine($"public override string ToString() => {Config.ToStringExpression};")
+            .WriteLine();
     }
 
     private void WriteTypeConversion()

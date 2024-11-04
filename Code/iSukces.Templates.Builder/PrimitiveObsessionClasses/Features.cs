@@ -13,5 +13,6 @@ public enum Features
     ImplicitConversionToPrimitive   = 64,
     ImplicitConversionFromPrimitive = 128,
     RelativeOperators               = 256,
-    All                             = 512 - 1
+    EqualityOperators               = 512,
+    All                             = 1024 - 1
 }
