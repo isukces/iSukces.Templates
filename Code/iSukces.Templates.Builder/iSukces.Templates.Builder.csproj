@@ -8,8 +8,8 @@
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
         <Authors>Internet Sukces Piotr Stęclik</Authors>
-        <AssemblyVersion>1.24.821.2</AssemblyVersion>
-        <FileVersion>1.24.821.2</FileVersion>
+        <AssemblyVersion>1.24.1109.3</AssemblyVersion>
+        <FileVersion>1.24.1109.3</FileVersion>
     </PropertyGroup>
     <ItemGroup>
         <Compile Update="PrimitiveObsessionClasses\GuidKey.cs">

@@ -66,7 +66,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         Close(true);
     }
 
-    private void BoolOperator(string op, string expr)
+    protected void BoolOperator(string op, string expr)
     {
         WriteLine($"public static bool operator {op}({Name} left, {Name} right) => {expr};").WriteLine();
     }
@@ -173,7 +173,12 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         if ((Implement & Features.RelativeOperators) == 0) return;
 
         foreach (var op in "> < >= <=".Split(' '))
-            BoolOperator(op, $"left.CompareTo(right) {op} 0");
+            BoolOperator(op, GetRelativeOperatorCode(op, "left", "right"));
+    }
+
+    protected virtual string GetRelativeOperatorCode(string op, string left, string right)
+    {
+        return $"{left}.CompareTo({right}) {op} 0";
     }
 
     private void WriteToString()

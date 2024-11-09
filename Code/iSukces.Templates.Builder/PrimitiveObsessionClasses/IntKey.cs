@@ -16,6 +16,11 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
         yield return new CaseExpressionItem("null", "throw new NotImplementedException()");
         yield return new CaseExpressionItem("_", "throw new NotImplementedException()");
     }
+    
+    protected override string GetRelativeOperatorCode(string op, string left, string right)
+    {
+        return $"{left}.Value {op} {right}.Value";
+    }
 
     protected override string GetEqualsExpression(string a, string b) => $"{a} == {b}";
     
