@@ -14,5 +14,7 @@ public enum Features
     ImplicitConversionFromPrimitive = 128,
     RelativeOperators               = 256,
     EqualityOperators               = 512,
-    All                             = 1024 - 1
+    // CompareToMethod                 = 1024,
+    ComparableObject                = 2048,
+    All                             = 4096 - 1
 }

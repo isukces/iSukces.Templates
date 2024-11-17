@@ -8,12 +8,13 @@ public class CodeWriterBase
             "throw new ArgumentException(\"\", nameof(" + argumentName + "));");
     }
 
-    protected void Close(bool addNl, string append = "")
+    public CodeWriterBase Close(bool addNl, string append = "")
     {
         DecIndent();
         WriteLine("}" + append);
         if (addNl)
             WriteLine();
+        return this;
     }
 
     public CodeWriterBase DecIndent()

@@ -9,7 +9,7 @@ public class StringKey : PrimitiveObsessionBase
         UseRecordStruct           = false;
         AllowWriteFromNullable    = false;
         HasReferenceNullableValue = true;
-        Comparison                = comparison;
+        WithComparison(comparison);
     }
 
     protected override void AddFieldsAndProperties()
@@ -68,8 +68,15 @@ public class StringKey : PrimitiveObsessionBase
         WriteIComparableAndEquatable((a, b) => $"{ComparerPropertyName}.Compare({a}, {b})");
     }
 
-    private string           Comparer   => $"StringComparer.{Comparison}";
-    public  StringComparison Comparison { get; set; } = StringComparison.Ordinal;
+    public string Comparer { get; set; } = "StringComparer.Ordinal";
+    
+    //public  StringComparison Comparison { get; set; } = StringComparison.Ordinal;
 
     private const string ComparerPropertyName = "Comparer";
+
+    public StringKey WithComparison(StringComparison comparison)
+    {
+        Comparer = "StringComparer." + comparison;
+        return this;
+    }
 }

@@ -13,7 +13,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             info.Implement |= Config.IncludeFeatures;
             info.Implement &= ~Config.IgnoreFeatures;
 
-            if ((info.Implement & Features.RelativeOperators) != 0)
+            if ((info.Implement & (Features.RelativeOperators | Features.ComparableObject)) != 0)
                 info.Implement |= Features.Comparable;
         }
 
@@ -41,7 +41,6 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
     {
     }
 
-
     private void AddJsonConverter()
     {
         if ((Implement & Features.NewtonsoftJsonSerializer) == 0) return;
@@ -49,9 +48,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         {
             WriteLine("public override bool CanConvert(Type objectType) => objectType == typeof(" + Name + ");");
             WriteLine();
-            Open(
-                "public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)");
-
+            Open("public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)");
 
             WriteCaseExpressionStatement("return reader.Value switch", GetJsonConverterReadItems(), ";");
             Close(true);
@@ -82,10 +79,13 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             yield return $"IPrimitiveWrapper<{WrappedType}>";
         if ((Implement & Features.EquatablePrimitive) != 0)
             yield return $"IEquatable<{WrappedType}>";
+        yield return $"IEquatable<{Name}>";
         if ((Implement & Features.ComparablePrimitive) != 0)
             yield return $"{nameof(IComparable)}<{WrappedType}>";
         if ((Implement & Features.Comparable) != 0)
             yield return $"IComparable<{Name}>";
+        if ((Implement & Features.ComparableObject) != 0)
+            yield return $"IComparable";
     }
 
 
@@ -151,7 +151,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
     {
         var arg = PrepareArgument("other");
         convertToComparable ??= (a, b) => $"{a}.CompareTo({b})";
-        if ((Implement & Features.ComparablePrimitive) != 0)
+        if ((Implement & Features.EquatablePrimitive) != 0)
             WriteLine($"public bool Equals({WrappedTypeRefNullable} other) => {GetEqualsExpression("Value", arg)};")
                 .WriteLine();
         if ((Implement & Features.Comparable) != 0)
@@ -159,8 +159,20 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             var c1 = convertToComparable("Value", "other.Value");
             WriteLine($"public int CompareTo({Name} other) => {c1};").WriteLine();
         }
+        if ((Implement & Features.ComparableObject) != 0)
+        {
+            //var c1 = convertToComparable("Value", arg);
+            Open("public int CompareTo(object? obj)")
+                .WriteLine("if (obj is null) return 1;")
+                .WriteLine("return obj is XPackageVersion other")
+                .IncIndent()
+                .WriteLine("? CompareTo(other)")
+                .WriteLine($": throw new ArgumentException($\"Object must be of type {{nameof({Name})}}\");")
+                .DecIndent()
+                .Close(true);
+        }
 
-        if ((Implement & Features.EquatablePrimitive) != 0)
+        if ((Implement & Features.ComparablePrimitive) != 0)
         {
             var c1 = convertToComparable("Value", arg);
             WriteLine($"public int CompareTo({WrappedTypeRefNullable} other) => {c1};")

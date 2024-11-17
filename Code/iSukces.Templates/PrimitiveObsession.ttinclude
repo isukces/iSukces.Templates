@@ -40,7 +40,9 @@ public enum Features
     ImplicitConversionFromPrimitive = 128,
     RelativeOperators               = 256,
     EqualityOperators               = 512,
-    All                             = 1024 - 1
+    // CompareToMethod                 = 1024,
+    ComparableObject                = 2048,
+    All                             = 4096 - 1
 }
 
 public enum TypeConversion
@@ -64,12 +66,13 @@ public class CodeWriterBase
             "throw new ArgumentException(\"\", nameof(" + argumentName + "));");
     }
 
-    protected void Close(bool addNl, string append = "")
+    public CodeWriterBase Close(bool addNl, string append = "")
     {
         DecIndent();
         WriteLine("}" + append);
         if (addNl)
             WriteLine();
+        return this;
     }
 
     public CodeWriterBase DecIndent()
@@ -152,7 +155,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             info.Implement |= Config.IncludeFeatures;
             info.Implement &= ~Config.IgnoreFeatures;
 
-            if ((info.Implement & Features.RelativeOperators) != 0)
+            if ((info.Implement & (Features.RelativeOperators | Features.ComparableObject)) != 0)
                 info.Implement |= Features.Comparable;
         }
 
@@ -187,8 +190,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         {
             WriteLine("public override bool CanConvert(Type objectType) => objectType == typeof(" + Name + ");");
             WriteLine();
-            Open(
-                "public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)");
+            Open("public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)");
 
             WriteCaseExpressionStatement("return reader.Value switch", GetJsonConverterReadItems(), ";");
             Close(true);
@@ -219,10 +221,13 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             yield return $"IPrimitiveWrapper<{WrappedType}>";
         if ((Implement & Features.EquatablePrimitive) != 0)
             yield return $"IEquatable<{WrappedType}>";
+        yield return $"IEquatable<{Name}>";
         if ((Implement & Features.ComparablePrimitive) != 0)
             yield return $"{nameof(IComparable)}<{WrappedType}>";
         if ((Implement & Features.Comparable) != 0)
             yield return $"IComparable<{Name}>";
+        if ((Implement & Features.ComparableObject) != 0)
+            yield return $"IComparable";
     }
 
     protected abstract IEnumerable<CaseExpressionItem> GetJsonConverterReadItems();
@@ -286,7 +291,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
     {
         var arg = PrepareArgument("other");
         convertToComparable ??= (a, b) => $"{a}.CompareTo({b})";
-        if ((Implement & Features.ComparablePrimitive) != 0)
+        if ((Implement & Features.EquatablePrimitive) != 0)
             WriteLine($"public bool Equals({WrappedTypeRefNullable} other) => {GetEqualsExpression("Value", arg)};")
                 .WriteLine();
         if ((Implement & Features.Comparable) != 0)
@@ -294,8 +299,20 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             var c1 = convertToComparable("Value", "other.Value");
             WriteLine($"public int CompareTo({Name} other) => {c1};").WriteLine();
         }
+        if ((Implement & Features.ComparableObject) != 0)
+        {
+            //var c1 = convertToComparable("Value", arg);
+            Open("public int CompareTo(object? obj)")
+                .WriteLine("if (obj is null) return 1;")
+                .WriteLine("return obj is XPackageVersion other")
+                .IncIndent()
+                .WriteLine("? CompareTo(other)")
+                .WriteLine($": throw new ArgumentException($\"Object must be of type {{nameof({Name})}}\");")
+                .DecIndent()
+                .Close(true);
+        }
 
-        if ((Implement & Features.EquatablePrimitive) != 0)
+        if ((Implement & Features.ComparablePrimitive) != 0)
         {
             var c1 = convertToComparable("Value", arg);
             WriteLine($"public int CompareTo({WrappedTypeRefNullable} other) => {c1};")
@@ -413,7 +430,7 @@ public class StringKey : PrimitiveObsessionBase
         UseRecordStruct           = false;
         AllowWriteFromNullable    = false;
         HasReferenceNullableValue = true;
-        Comparison                = comparison;
+        WithComparison(comparison);
     }
 
     protected override void AddFieldsAndProperties()
@@ -470,10 +487,17 @@ public class StringKey : PrimitiveObsessionBase
         WriteIComparableAndEquatable((a, b) => $"{ComparerPropertyName}.Compare({a}, {b})");
     }
 
-    private string           Comparer   => $"StringComparer.{Comparison}";
-    public  StringComparison Comparison { get; set; } = StringComparison.Ordinal;
+    public string Comparer { get; set; } = "StringComparer.Ordinal";
+
+    //public  StringComparison Comparison { get; set; } = StringComparison.Ordinal;
 
     private const string ComparerPropertyName = "Comparer";
+
+    public StringKey WithComparison(StringComparison comparison)
+    {
+        Comparer = "StringComparer." + comparison;
+        return this;
+    }
 }
 
 public class GuidKey(string name) : PrimitiveObsessionBase(name, "Guid")
