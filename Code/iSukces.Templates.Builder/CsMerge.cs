@@ -40,7 +40,7 @@ internal class CsMerge(string[] header)
         yield return "#>";
     }
 
-    private IEnumerable<string> GetNamespaces()
+    private static IEnumerable<string> GetNamespaces()
     {
         yield return "System.Collections.Generic";
         yield return "System.Linq";

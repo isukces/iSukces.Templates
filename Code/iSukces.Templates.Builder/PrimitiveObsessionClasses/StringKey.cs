@@ -52,7 +52,8 @@ public class StringKey : PrimitiveObsessionBase
 
     protected override void WriteCodeInternal()
     {
-        WriteLine($"public {Name}({WrappedTypeRefNullable} value) => _value = value?.Trim();");
+        var text = string.Format(StringPreprocess, "value");
+        WriteLine($"public {Name}({WrappedTypeRefNullable} value) => _value = {text};");
         WriteLine();
 
         WriteLine($"public override bool Equals(object? obj) => obj is {Name} x && Equals(x);")
@@ -69,8 +70,8 @@ public class StringKey : PrimitiveObsessionBase
     }
 
     public string Comparer { get; set; } = "StringComparer.Ordinal";
-    
-    //public  StringComparison Comparison { get; set; } = StringComparison.Ordinal;
+
+    public string StringPreprocess { get; set; } = "{0}?.Trim()";
 
     private const string ComparerPropertyName = "Comparer";
 

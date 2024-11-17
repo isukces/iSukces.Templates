@@ -1,0 +1,50 @@
+<#@ template language="C#" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+namespace iSukces.Templates.Builder.PrimitiveObsessionClasses;
+
+
+
+[Flags]
+public enum Features
+{
+<#
+    foreach (var line in GetLines())
+        WriteLine(line);
+#>
+}
+<#+
+    private static IEnumerable<string> GetLines()
+    {
+        var names = GetNames().ToArray();
+        var max = names.Max(a => a.Length) + 1;
+        yield return A("None", 0) ;
+        var mul = 1;
+        foreach (var name in names)
+        {
+            yield return A(name, mul) ;
+            mul <<= 1;
+        }
+        yield return A("All", mul - 1).TrimEnd(',');
+        
+        string A(string n, int v) => $"    {n.PadRight(max)}= {v},";
+    }
+
+    private static IEnumerable<string> GetNames()
+    {
+        var l = @"
+PrimitiveWrapper
+Comparable
+ComparablePrimitive
+EquatablePrimitive
+ImplicitConversionToPrimitive
+ImplicitConversionFromPrimitive
+RelativeOperators
+EqualityOperators
+ComparableObject
+NewtonsoftJsonSerializer
+Parse
+";
+        return l.Split('\r', '\n').Select(a => a.Trim()).Where(a => !string.IsNullOrEmpty(a));
+    }
+#>
