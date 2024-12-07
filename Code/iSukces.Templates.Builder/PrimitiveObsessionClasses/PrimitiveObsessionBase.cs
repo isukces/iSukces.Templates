@@ -164,7 +164,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             //var c1 = convertToComparable("Value", arg);
             Open("public int CompareTo(object? obj)")
                 .WriteLine("if (obj is null) return 1;")
-                .WriteLine("return obj is XPackageVersion other")
+                .WriteLine($"return obj is {Name} other")
                 .IncIndent()
                 .WriteLine("? CompareTo(other)")
                 .WriteLine($": throw new ArgumentException($\"Object must be of type {{nameof({Name})}}\");")
