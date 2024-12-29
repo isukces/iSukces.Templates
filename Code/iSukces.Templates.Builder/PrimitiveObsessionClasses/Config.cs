@@ -20,5 +20,5 @@ public static class Config
     /// <summary>
     ///     Default conversion from primitive type
     /// </summary>
-    public static string ToStringExpression { get; set; } 
+    public static string? ToStringExpression { get; set; } 
 }

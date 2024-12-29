@@ -31,6 +31,7 @@ internal class Program
             .WithSource("PrimitiveObsessionClasses\\IntKey.cs")
             .WithSource("PrimitiveObsessionClasses\\StringKey.cs")
             .WithSource("PrimitiveObsessionClasses\\GuidKey.cs")
+            .WithSource("PrimitiveObsessionClasses\\DoubleKey.cs")
             .WithProject("iSukces.Templates.sln")
             .WriteTo("iSukces.Templates\\PrimitiveObsession.ttinclude")
             ;

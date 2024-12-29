@@ -3,13 +3,13 @@
     <PropertyGroup>
         <Copyright>Copyright © Internet Sukces Piotr Stęclik 2024</Copyright>
         <ProjectGuid>{5DE7220E-F3B1-40C1-BAD6-56EAD74CE7C4}</ProjectGuid>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
         <Authors>Internet Sukces Piotr Stęclik</Authors>
-        <AssemblyVersion>1.24.1207.4</AssemblyVersion>
-        <FileVersion>1.24.1207.4</FileVersion>
+        <AssemblyVersion>1.24.1229.5</AssemblyVersion>
+        <FileVersion>1.24.1229.5</FileVersion>
     </PropertyGroup>
     <ItemGroup>
         <Compile Update="PrimitiveObsessionClasses\GuidKey.cs">
@@ -25,6 +25,9 @@
           <AutoGen>True</AutoGen>
           <DesignTime>True</DesignTime>
           <DependentUpon>Features.tt</DependentUpon>
+        </Compile>
+        <Compile Update="PrimitiveObsessionClasses\DoubleKey.cs">
+          <DependentUpon>PrimitiveObsessionBase.cs</DependentUpon>
         </Compile>
     </ItemGroup>
     <ItemGroup>
