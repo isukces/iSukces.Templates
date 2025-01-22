@@ -41,6 +41,14 @@ public class DoubleKey(string name) : PrimitiveObsessionBase(name, "double")
         WriteParse();
     }
 
+    protected override void WriteSystemTextConverter(bool reader)
+    {
+        if (reader)
+            WriteLine($"return {Name}.Parse(reader.GetString()!);");
+        else
+            WriteLine("writer.WriteStringValue(value.Value.ToString());");
+    }
+
     private void WriteParse()
     {
         if ((Implement & Features.Parse) == 0) return;

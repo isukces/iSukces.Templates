@@ -16,6 +16,7 @@ public enum Features
     EqualityOperators               = 128,
     ComparableObject                = 256,
     NewtonsoftJsonSerializer        = 512,
-    Parse                           = 1024,
-    All                             = 2047
+    SystemTextJsonSerializer        = 1024,
+    Parse                           = 2048,
+    All                             = 4095
 }

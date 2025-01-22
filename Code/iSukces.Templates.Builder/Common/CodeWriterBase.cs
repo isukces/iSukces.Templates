@@ -79,14 +79,9 @@ public class CodeWriterBase
         return this;
     }
 
-
     private string IndentString { get; set; } = string.Empty;
-
-    #region Fields
 
     private int _indent;
 
     protected TextTransformation? Output;
-
-    #endregion
 }

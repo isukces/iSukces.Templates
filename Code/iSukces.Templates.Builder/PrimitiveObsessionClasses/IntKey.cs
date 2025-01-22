@@ -4,6 +4,11 @@ namespace iSukces.Templates.Builder.PrimitiveObsessionClasses;
 
 public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
 {
+    protected override string GetEqualsExpression(string a, string b)
+    {
+        return $"{a} == {b}";
+    }
+
     protected override IEnumerable<CaseExpressionItem> GetJsonConverterReadItems()
     {
         var parse = (Implement & Features.Parse) != 0
@@ -16,19 +21,19 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
         yield return new CaseExpressionItem("null", "throw new NotImplementedException()");
         yield return new CaseExpressionItem("_", "throw new NotImplementedException()");
     }
-    
+
     protected override string GetRelativeOperatorCode(string op, string left, string right)
     {
         return $"{left}.Value {op} {right}.Value";
     }
 
-    protected override string GetEqualsExpression(string a, string b) => $"{a} == {b}";
-    
     protected override IEnumerable<string> GetUsingNamespaces()
     {
         foreach (var ns in base.GetUsingNamespaces())
             yield return ns;
         if ((Implement & (Features.NewtonsoftJsonSerializer | Features.Parse)) != 0)
+            yield return "System.Globalization";
+        if ((Implement & (Features.SystemTextJsonSerializer | Features.Parse)) != 0)
             yield return "System.Globalization";
     }
 
@@ -46,5 +51,14 @@ public class IntKey(string name) : PrimitiveObsessionBase(name, "int")
         CheckArgumentNullOrEmpty("text");
         WriteLine($"return new {Name}({WrappedType}.Parse(text, CultureInfo.InvariantCulture));");
         Close(true);
+    }
+
+
+    protected override void WriteSystemTextConverter(bool reader)
+    {
+        if (reader)
+            WriteLine($"return new {Name}(reader.GetInt32());");
+        else
+            WriteLine("writer.WriteNumberValue(value.Value);");
     }
 }

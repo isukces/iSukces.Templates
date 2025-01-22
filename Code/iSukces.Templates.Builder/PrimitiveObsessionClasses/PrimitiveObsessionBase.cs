@@ -41,14 +41,15 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
     {
     }
 
-    private void AddJsonConverter()
+    private void AddNewtosoftJsonConverter()
     {
         if ((Implement & Features.NewtonsoftJsonSerializer) == 0) return;
         Open($"public sealed class {Name}JsonConverter : JsonConverter");
         {
             WriteLine("public override bool CanConvert(Type objectType) => objectType == typeof(" + Name + ");");
             WriteLine();
-            Open("public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)");
+            Open(
+                "public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)");
 
             WriteCaseExpressionStatement("return reader.Value switch", GetJsonConverterReadItems(), ";");
             Close(true);
@@ -58,6 +59,27 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
                     "throw new NullReferenceException(\"value is null\");");
                 WriteLine($"writer.WriteValue((({Name})value).Value);");
             }
+            Close(true);
+        }
+        Close(true);
+    }
+
+    private void AddSystemTextJsonConverter()
+    {
+        if ((Implement & Features.SystemTextJsonSerializer) == 0) return;
+        Open(
+            $"public sealed class {Name}SystemTextJsonConverter : System.Text.Json.Serialization.JsonConverter<{Name}>");
+        {
+            Open(
+                $"public override {Name} Read(ref System.Text.Json.Utf8JsonReader reader, Type typeToConvert, System.Text.Json.JsonSerializerOptions options)");
+            WriteSystemTextConverter(true);
+            // WriteLine($"return {Name}.Parse(reader.GetString()!);");
+            Close(true);
+
+            Open(
+                $"public override void Write(System.Text.Json.Utf8JsonWriter writer, {Name} value, System.Text.Json.JsonSerializerOptions options)");
+            //WriteLine("writer.WriteStringValue(value.Value.ToString());");
+            WriteSystemTextConverter(false);
             Close(true);
         }
         Close(true);
@@ -85,11 +107,15 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         if ((Implement & Features.Comparable) != 0)
             yield return $"IComparable<{Name}>";
         if ((Implement & Features.ComparableObject) != 0)
-            yield return $"IComparable";
+            yield return "IComparable";
     }
 
-
     protected abstract IEnumerable<CaseExpressionItem> GetJsonConverterReadItems();
+
+    protected virtual string GetRelativeOperatorCode(string op, string left, string right)
+    {
+        return $"{left}.CompareTo({right}) {op} 0";
+    }
 
     protected virtual IEnumerable<string> GetUsingNamespaces()
     {
@@ -134,7 +160,8 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         WriteEqualityOperators();
         AddFieldsAndProperties();
         Close(true);
-        AddJsonConverter();
+        AddNewtosoftJsonConverter();
+        AddSystemTextJsonConverter();
     }
 
     protected abstract void WriteCodeInternal();
@@ -159,6 +186,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             var c1 = convertToComparable("Value", "other.Value");
             WriteLine($"public int CompareTo({Name} other) => {c1};").WriteLine();
         }
+
         if ((Implement & Features.ComparableObject) != 0)
         {
             //var c1 = convertToComparable("Value", arg);
@@ -188,10 +216,8 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             BoolOperator(op, GetRelativeOperatorCode(op, "left", "right"));
     }
 
-    protected virtual string GetRelativeOperatorCode(string op, string left, string right)
-    {
-        return $"{left}.CompareTo({right}) {op} 0";
-    }
+
+    protected abstract void WriteSystemTextConverter(bool reader);
 
     private void WriteToString()
     {

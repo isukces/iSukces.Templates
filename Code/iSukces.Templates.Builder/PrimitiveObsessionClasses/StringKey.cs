@@ -4,7 +4,8 @@ namespace iSukces.Templates.Builder.PrimitiveObsessionClasses;
 
 public class StringKey : PrimitiveObsessionBase
 {
-    public StringKey(string name, StringComparison comparison = StringComparison.Ordinal) : base(name, "string")
+    public StringKey(string name, StringComparison comparison = StringComparison.Ordinal)
+        : base(name, "string")
     {
         UseRecordStruct           = false;
         AllowWriteFromNullable    = false;
@@ -21,10 +22,9 @@ public class StringKey : PrimitiveObsessionBase
 
         WriteLine($"public {WrappedType} Value => _value ?? string.Empty;");
         WriteLine();
-        
+
         WriteLine($"public static {Name} Empty {{ get; }} = new {Name}(null);");
         WriteLine();
-
 
         WriteLine("public bool IsEmpty => string.IsNullOrEmpty(_value);");
         WriteLine();
@@ -50,6 +50,12 @@ public class StringKey : PrimitiveObsessionBase
         return $"{variableName} ?? string.Empty";
     }
 
+    public StringKey WithComparison(StringComparison comparison)
+    {
+        Comparer = "StringComparer." + comparison;
+        return this;
+    }
+
     protected override void WriteCodeInternal()
     {
         var text = string.Format(StringPreprocess, "value");
@@ -62,11 +68,18 @@ public class StringKey : PrimitiveObsessionBase
         WriteLine($"public bool Equals({Name} other) => {GetEqualsExpression("Value", "other.Value")};")
             .WriteLine();
 
-
         WriteLine($"public override int GetHashCode() => {ComparerPropertyName}.GetHashCode(Value);")
             .WriteLine();
 
         WriteIComparableAndEquatable((a, b) => $"{ComparerPropertyName}.Compare({a}, {b})");
+    }
+
+    protected override void WriteSystemTextConverter(bool reader)
+    {
+        if (reader)
+            WriteLine($"return new {Name}(reader.GetString());");
+        else
+            WriteLine("writer.WriteStringValue(value.Value);");
     }
 
     public string Comparer { get; set; } = "StringComparer.Ordinal";
@@ -74,10 +87,4 @@ public class StringKey : PrimitiveObsessionBase
     public string StringPreprocess { get; set; } = "{0}?.Trim()";
 
     private const string ComparerPropertyName = "Comparer";
-
-    public StringKey WithComparison(StringComparison comparison)
-    {
-        Comparer = "StringComparer." + comparison;
-        return this;
-    }
 }

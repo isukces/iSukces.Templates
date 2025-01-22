@@ -4,6 +4,13 @@ namespace iSukces.Templates.Builder;
 
 internal class CsMerge(string[] header)
 {
+    private static IEnumerable<string> GetNamespaces()
+    {
+        yield return "System.Collections.Generic";
+        yield return "System.Linq";
+        yield return "Microsoft.VisualStudio.TextTemplating";
+    }
+
     private static string GetProjectPath(string projectFileName, [CallerFilePath] string? path = null)
     {
         if (string.IsNullOrWhiteSpace(path))
@@ -40,13 +47,6 @@ internal class CsMerge(string[] header)
         yield return "#>";
     }
 
-    private static IEnumerable<string> GetNamespaces()
-    {
-        yield return "System.Collections.Generic";
-        yield return "System.Linq";
-        yield return "Microsoft.VisualStudio.TextTemplating";
-    }
-
 
     public CsMerge WithProject(string projectFileName)
     {
@@ -69,12 +69,8 @@ internal class CsMerge(string[] header)
         File.WriteAllLines(outputFilename, lines);
     }
 
-    #region Fields
-
-    private          string       _directory;
+    private string _directory;
     private readonly List<CsFile> _sources = new();
-
-    #endregion
 }
 
 [Flags]

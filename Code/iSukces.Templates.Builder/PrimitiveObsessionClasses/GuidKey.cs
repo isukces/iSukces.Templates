@@ -42,4 +42,12 @@ public class GuidKey(string name) : PrimitiveObsessionBase(name, "Guid")
         WriteLine($"return new {Name}({WrappedType}.Parse(text));");
         Close(true);
     }
+
+    protected override void WriteSystemTextConverter(bool reader)
+    {
+        if (reader)
+            WriteLine($"return {Name}.Parse(reader.GetString()!);");
+        else
+            WriteLine("writer.WriteStringValue(value.Value.ToString());");
+    }
 }
