@@ -218,11 +218,19 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
 
 
     protected abstract void WriteSystemTextConverter(bool reader);
+    
+    /// <summary>
+    ///     ToString method expression
+    /// </summary>
+    public static string? ToStringExpression { get; set; }
 
     private void WriteToString()
     {
-        if (string.IsNullOrEmpty(Config.ToStringExpression)) return;
-        WriteLine($"public override string ToString() => {Config.ToStringExpression};")
+        var expr = Config.ToStringExpression;
+        if (!string.IsNullOrEmpty(ToStringExpression))
+            expr = ToStringExpression;
+        if (string.IsNullOrEmpty(expr)) return;
+        WriteLine($"public override string ToString() => {expr};")
             .WriteLine();
     }
 

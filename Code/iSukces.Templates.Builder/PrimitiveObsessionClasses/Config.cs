@@ -18,7 +18,7 @@ public static class Config
     public static TypeConversion ConvertFromPrimitive { get; set; } = TypeConversion.Explicit;
 
     /// <summary>
-    ///     Default conversion from primitive type
+    ///     Default ToString method expression
     /// </summary>
     public static string? ToStringExpression { get; set; } 
 }
