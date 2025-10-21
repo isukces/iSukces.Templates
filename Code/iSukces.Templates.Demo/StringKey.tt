@@ -13,7 +13,8 @@
     {
         new StringKey("MyIdentifier", StringComparison.OrdinalIgnoreCase)
         {
-            IsPartial = true
+            IsPartial = true,
+            ToStringExpression = "Value",
         }
     };
 
