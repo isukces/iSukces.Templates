@@ -29,9 +29,18 @@
         <Compile Update="PrimitiveObsessionClasses\DoubleKey.cs">
           <DependentUpon>PrimitiveObsessionBase.cs</DependentUpon>
         </Compile>
+        <Compile Update="MvvmClasses\Features.cs">
+          <AutoGen>True</AutoGen>
+          <DesignTime>True</DesignTime>
+          <DependentUpon>Features.tt</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
       <None Update="PrimitiveObsessionClasses\Features.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>Features.cs</LastGenOutput>
+      </None>
+      <None Update="MvvmClasses\Features.tt">
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>Features.cs</LastGenOutput>
       </None>

@@ -1,0 +1,17 @@
+<#@ template language="C#" #>
+<#@ include file="..\iSukces.Templates\MvvmBuilder.ttinclude" once="true" #>
+<#
+    new MvvmBuilder
+    {
+        Namespace = "iSukces.Templates.Demo",
+        ClassName = "MvvmDemo",
+        GenericType = "TItem",
+        Visibility = "public",
+        IsPartial = false,
+        Features = Features.INotifyPropertyChanged,
+        AfterOnPropertyChanged = "System.Console.WriteLine();"
+    }
+        .WithProperty("string", "Name1")
+        .Write(this);
+    
+#>

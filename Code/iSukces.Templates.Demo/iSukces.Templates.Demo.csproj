@@ -50,5 +50,14 @@
           <DesignTime>True</DesignTime>
           <DependentUpon>KeysDouble.tt</DependentUpon>
         </Compile>
+        <None Update="MvvmDemo.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>MvvmDemo.cs</LastGenOutput>
+        </None>
+        <Compile Update="MvvmDemo.cs">
+          <AutoGen>True</AutoGen>
+          <DesignTime>True</DesignTime>
+          <DependentUpon>MvvmDemo.tt</DependentUpon>
+        </Compile>
     </ItemGroup>
 </Project>
