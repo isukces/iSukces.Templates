@@ -3,7 +3,7 @@
     <PropertyGroup>
         <Copyright>Copyright © Internet Sukces Piotr Stęclik 2024-2025</Copyright>
         <ProjectGuid>{5DE7220E-F3B1-40C1-BAD6-56EAD74CE7C4}</ProjectGuid>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
