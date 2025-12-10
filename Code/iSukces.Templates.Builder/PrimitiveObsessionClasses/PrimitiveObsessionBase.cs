@@ -222,7 +222,7 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
     /// <summary>
     ///     ToString method expression
     /// </summary>
-    public static string? ToStringExpression { get; set; }
+    public string? ToStringExpression { get; set; }
 
     private void WriteToString()
     {
@@ -240,12 +240,12 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         Write(ConvertToPrimitive, WrappedType, Name, "value.Value");
         return;
 
-        void Write(TypeConversion c, string result, string arg, string expression)
+        void Write(TypeConversion conversion, string result, string arg, string expression)
         {
-            if (c == TypeConversion.None) return;
+            if (conversion == TypeConversion.None) return;
 
             WriteLine(
-                    $"public static {ConvertToPrimitive.ToString().ToLower()} operator {result}({arg} value) => {expression};")
+                    $"public static {conversion.ToString().ToLower()} operator {result}({arg} value) => {expression};")
                 .WriteLine();
         }
     }
