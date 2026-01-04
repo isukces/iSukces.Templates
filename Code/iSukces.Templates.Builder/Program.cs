@@ -19,7 +19,7 @@ internal class Program
         var header = new[]
         {
             welcome,
-            "Get latest version from https://raw.githubusercontent.com/isukces/iSukces.Templates/main/Code/iSukces.Templates/PrimitiveObsession.ttinclude"
+            "Get the latest version from https://raw.githubusercontent.com/isukces/iSukces.Templates/main/Code/iSukces.Templates/PrimitiveObsession.ttinclude"
         };
         new CsMerge(header)
             .WithProject("iSukces.Templates.Builder.csproj")
