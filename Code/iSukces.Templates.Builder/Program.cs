@@ -40,7 +40,7 @@ internal class Program
         header =
         [
             welcome,
-            "Get latest version from https://raw.githubusercontent.com/isukces/iSukces.Templates/main/Code/iSukces.Templates/MvvmBuilder.ttinclude"
+            "Get the latest version from https://raw.githubusercontent.com/isukces/iSukces.Templates/main/Code/iSukces.Templates/MvvmBuilder.ttinclude"
         ];
         new CsMerge(header)
             .WithProject("iSukces.Templates.Builder.csproj")
