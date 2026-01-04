@@ -124,6 +124,9 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
             yield return "iSukces.Base";
         if ((Implement & Features.NewtonsoftJsonSerializer) != 0)
             yield return "Newtonsoft.Json";
+        if (Config.AddUsings is not null)
+            foreach (var a in Config.AddUsings)
+                yield return a;
     }
 
     protected virtual string PrepareArgument(string variableName)
@@ -131,10 +134,14 @@ public abstract class PrimitiveObsessionBase(string name, string wrappedType) : 
         return variableName;
     }
 
-    private void WriteAttributes()
+    protected virtual void WriteAttributes()
     {
         if ((Implement & Features.NewtonsoftJsonSerializer) != 0)
             WriteLine($"[JsonConverter(typeof({Name}JsonConverter))]");
+
+        if (Config.AddAttributes is not null)
+            foreach (var a in Config.AddAttributes)
+                WriteLine("[" + a + "]");
     }
 
 

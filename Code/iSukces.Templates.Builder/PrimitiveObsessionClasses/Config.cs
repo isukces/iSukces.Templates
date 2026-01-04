@@ -6,6 +6,8 @@ public static class Config
     public static Features        IgnoreFeatures  { get; set; }
     public static Features        IncludeFeatures { get; set; }
     public static HashSet<string> ImplicitUsings  { get; } = new();
+    public static string[]?       AddUsings       { get; set; }
+    public static string[]?       AddAttributes   { get; set; }
 
     /// <summary>
     ///     Default conversion to primitive type
@@ -20,5 +22,6 @@ public static class Config
     /// <summary>
     ///     Default ToString method expression
     /// </summary>
-    public static string? ToStringExpression { get; set; } 
+    public static string? ToStringExpression { get; set; }
+
 }
